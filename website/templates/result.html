@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="background-color: #f5f5f5; height: 100vh">
+    <div class="container h-100">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+                <div class="card border-0 p-3 shadow-sm text-center">
+                    <h3 class="text-muted">Company: {{ company }}</h3>
+                    <h5 class="lead text-muted">Current price: {{latest_price}}$</h5>
+                    <h5 class="lead text-muted">Change precent: {{change_precent}}%</h5>
+                    <h5 class="lead text-muted">Change: {{change}}</h5>
+                    <h5 class="lead text-muted">Open: {{open}}</h5>
+                    <h5 class="lead text-muted">High: {{high}}</h5>
+                    <h5 class="lead text-muted">Low: {{low}}</h5>
+                    <h5 class="lead text-muted">52 weeks high: {{fifty_two_weeks_high}}</h5>
+                    <h5 class="lead text-muted">52 weeks low: {{fifty_two_weeks_low}}</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
