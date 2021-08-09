@@ -1,20 +1,23 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, flash
 import requests
 
-latest_price = ''
-change_precent = ''
-change = ''
-open = ''
-high = ''
-low = ''
-fifty_two_weeks_high = ''
-fifty_two_weeks_low = ''
+
 
 def create_app():
     app = Flask(__name__)
 
     @app.route('/', methods=['GET', 'POST'])
     def home():
+
+        latest_price = ''
+        change_precent = ''
+        change = ''
+        open = ''
+        high = ''
+        low = ''
+        fifty_two_weeks_high = ''
+        fifty_two_weeks_low = ''
+        company = ''
 
         try:
             if request.method == "POST":
@@ -43,7 +46,7 @@ def create_app():
                 return render_template("result.html",copany=company, latest_price=latest_price, change_precent=change_precent, change=change, open=open,
                 high=high, low=low, fifty_two_weeks_high=fifty_two_weeks_high, fifty_two_weeks_low=fifty_two_weeks_low)
         except KeyError:
-            print("Couldn't get the stock'")
+            print("Couldn't get the stock")
 
         return render_template('index.html')
 
