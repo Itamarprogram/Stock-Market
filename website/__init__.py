@@ -43,7 +43,7 @@ def create_app():
 
                 print(latest_price)
 
-                return render_template("result.html",copany=company, latest_price=latest_price, change_precent=change_precent, change=change, open=open,
+                return render_template("result.html",company=company, latest_price=latest_price, change_precent=change_precent, change=change, open=open,
                 high=high, low=low, fifty_two_weeks_high=fifty_two_weeks_high, fifty_two_weeks_low=fifty_two_weeks_low)
         except KeyError:
             print("Couldn't get the stock")
