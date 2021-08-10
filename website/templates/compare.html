@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="background-color: #f5f5f5; height: 100vh;">
+  <div class="container h-100">
+    <div class="row justify-content-center">
+      <div class="col-md-6 col-sm-12 col-xs-12 pt-5">
+        <form action='/comparison' method="POST" class="card border-0 p-3 shadow-sm">
+          <div class="form-group">
+            <input type="text" class="form-control" name="company1" placeholder="AAPL">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" name="company2" placeholder="MSFT">
+          </div>
+          <div class="form-group">
+            <button class="btn btn-info btn-block">Compare</button>
+          </div>
+        </form>
+        <form action='\'method="POST">
+          <br />
+          <div align="center">
+            <button type="submit" class="btn btn-lg btn-primary">Home</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
