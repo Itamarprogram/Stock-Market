@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash
+from flask import Flask, request, render_template, redirect
 import requests
 
 # file deepcode ignore HardcodedNonCryptoSecret: <declaring the key>
@@ -12,7 +12,8 @@ def create_app():
 
         try:
             if request.method == "POST":
-                company = request.form['company']
+                company = request.form['company'].upper()
+                company = company.upper()
 
                 url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={company}&apikey={API_KEY}'
                 url_2 = f'https://www.alphavantage.co/query?function=OVERVIEW&symbol={company}&apikey={API_KEY}'
@@ -33,22 +34,26 @@ def create_app():
 
                 return render_template("result_search.html",company=company, latest_price=latest_price, change_precent=change_precent,
                  change=change, open=open,high=high, low=low, fifty_two_weeks_high=fifty_two_weeks_high, fifty_two_weeks_low=fifty_two_weeks_low)
-        except KeyError:
-            print("Couldn't get the stock")
+        except Exception:
+            pass
 
-        return render_template('index.html')
-
-        
+        return render_template("index.html")
+     
     @app.route('/compare', methods=['GET','POST'])
     def redirect_compare():
         return render_template('compare.html')
 
-    @app.route('/comparison', methods=['GET','POST'])
+    @app.route('/comparison', methods=['POST'])
     def comparison():
         try:
             if request.method == 'POST':
                 company_1 = request.form['company1']
+                company_1 = company_1.upper()
                 company_2 = request.form['company2']
+                company_2 = company_2.upper()
+                if company_1 == company_2:
+                    print("Can't compare company")
+                    return render_template('compare.html')
 
                 #Getting company 1 urls
                 url_company1_1 = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={company_1}&apikey={API_KEY}'
@@ -73,7 +78,7 @@ def create_app():
                 fifty_two_weeks_low_1 = r2_company_1.json()['52WeekLow']
 
                 #Getting all the details of company 2
-                latest_price_2 = r1_company_1.json()['Global Quote']['05. price']
+                latest_price_2 = r1_company_2.json()['Global Quote']['05. price']
                 change_precent_2 = r1_company_2.json()['Global Quote']['10. change percent']
                 change_2 = r1_company_2.json()['Global Quote']['09. change']
                 open_2 = r1_company_2.json()['Global Quote']['02. open']
@@ -89,9 +94,8 @@ def create_app():
                 fifty_two_weeks_low_1=fifty_two_weeks_low_1, fifty_two_weeks_low_2=fifty_two_weeks_low_2,
                 fifty_two_weeks_high_1=fifty_two_weeks_high_1, fifty_two_weeks_high_2=fifty_two_weeks_high_2)
         except Exception:
-            print("ERROR")
+            return redirect('/compare')
 
 
-        return render_template('compare.html')
 
     return app
