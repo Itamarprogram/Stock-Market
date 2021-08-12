@@ -1,7 +1,6 @@
 from flask import Flask, request, render_template, redirect
 import requests
 
-# file deepcode ignore HardcodedNonCryptoSecret: <declaring the key>
 API_KEY = 'K5C1AVWTEC7NXPYQ'
 
 def create_app():
@@ -10,40 +9,40 @@ def create_app():
     def get_company(company):
         url = f'https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={company}&apikey={API_KEY}'
 
-        r1 = requests.get(url)
+        response = requests.get(url)
 
         try:
-            latest_price = r1.json()['Global Quote']['05. price']
-            print(latest_price)
-            change_percent  = r1.json()['Global Quote']['10. change percent']
-            print(change_percent)
-            change = r1.json()['Global Quote']['09. change']
-            print(change)
-            open = r1.json()['Global Quote']['02. open']
-            print(open)
-            high = r1.json()['Global Quote']['03. high']
-            print(high)
-            low = r1.json()['Global Quote']['04. low']
-            print(low+"\n")
+            price = response.json()['Global Quote']['05. price']
+            change_percent  = response.json()['Global Quote']['10. change percent']
+            change = response.json()['Global Quote']['09. change']
+            open = response.json()['Global Quote']['02. open']
+            high = response.json()['Global Quote']['03. high']
+            low = response.json()['Global Quote']['04. low']
+
+            details = {
+                'company': company,
+                'price': price,
+                'changePercent': change_percent,
+                'change': change,
+                'open': open,
+                'high': high,
+                'low': low
+            }
         except KeyError:
-            print("There is no such company")
             return None
 
-        return latest_price, change_percent , change, open, high, low
-
+        return details
 
     @app.route('/', methods=['GET', 'POST'])
     def home():
 
         try:
             if request.method == "POST":
-                company = request.form['company']
-                company = company.upper()
+                company = request.form['company'].upper()
 
-                latest_price, change_percent, change, open, high, low = get_company(company)
+                details = get_company(company)
 
-                return render_template("result_search.html",company=company, latest_price=latest_price, change_percent=change_percent,
-                    change=change, open=open,high=high, low=low)
+                return render_template("result_search.html", details=details)
         except Exception:
             print("There is some error I suppose")
 
@@ -53,26 +52,21 @@ def create_app():
     def redirect_compare():
         return render_template('compare.html')
 
-
     @app.route('/comparison', methods=['POST'])
     def comparison():
         try:
             if request.method == 'POST':
-                company_1 = request.form['company1']
-                company_1 = company_1.upper()
-                company_2 = request.form['company2']
-                company_2 = company_2.upper()
+                company_1 = request.form['company1'].upper()
+                company_2 = request.form['company2'].upper()
 
                 if company_1 == company_2:
-                    print("The same company")
+                    print("You have entered the same company")
                     return render_template('compare.html')
 
-                latest_price_1, change_percent_1, change_1, open_1, high_1, low_1 = get_company(company_1)
-                latest_price_2, change_percent_2, change_2, open_2, high_2, low_2 = get_company(company_2)
+                details_1 = get_company(company_1)
+                details_2 = get_company(company_2)
 
-                return render_template("result_compare.html",company_1=company_1, company_2=company_2, latest_price_1=latest_price_1,
-                latest_price_2=latest_price_2, change_precent_1=change_percent_1, change_precent_2=change_percent_2, change_1=change_1,
-                change_2=change_2, open_1=open_1, open_2=open_2, high_1=high_1, high_2=high_2, low_1=low_1, low_2=low_2,)
+                return render_template("result_compare.html", details_1=details_1, details_2=details_2)
         except Exception:
             return redirect('/compare')
 
